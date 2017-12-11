@@ -15,12 +15,12 @@ METEOR_JAR = 'meteor-1.5.jar'
 class Meteor:
 
     def __init__(self):
-        self.meteor_cmd = ['java', '-jar', '-Xmx2G', METEOR_JAR, \
+        self.meteor_cmd = ['java', '-jar', '-Xmx2G', METEOR_JAR,
                 '-', '-', '-stdio', '-l', 'en', '-norm']
-        self.meteor_p = subprocess.Popen(self.meteor_cmd, \
-                cwd=os.path.dirname(os.path.abspath(__file__)), \
-                stdin=subprocess.PIPE, \
-                stdout=subprocess.PIPE, \
+        self.meteor_p = subprocess.Popen(self.meteor_cmd,
+                cwd=os.path.dirname(os.path.abspath(__file__)),
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE)
         # Used to guarantee thread safety
         self.lock = threading.Lock()
@@ -35,12 +35,14 @@ class Meteor:
         for i in imgIds:
             assert(len(res[i]) == 1)
             stat = self._stat(res[i][0], gts[i])
+            print("stat:{}".format(stat))
             eval_line += ' ||| {}'.format(stat)
 
-        self.meteor_p.stdin.write('{}\n'.format(eval_line))
+        self.meteor_p.stdin.write('{}\n'.format(eval_line).encode('utf-8'))
         for i in range(0,len(imgIds)):
             scores.append(float(self.meteor_p.stdout.readline().strip()))
         score = float(self.meteor_p.stdout.readline().strip())
+        print("Score:{},{}".format(score, scores))
         self.lock.release()
 
         return score, scores
@@ -52,8 +54,9 @@ class Meteor:
         # SCORE ||| reference 1 words ||| reference n words ||| hypothesis words
         hypothesis_str = hypothesis_str.replace('|||','').replace('  ',' ')
         score_line = ' ||| '.join(('SCORE', ' ||| '.join(reference_list), hypothesis_str))
-        self.meteor_p.stdin.write('{}\n'.format(score_line))
-        return self.meteor_p.stdout.readline().strip()
+        print(score_line)
+        self.meteor_p.stdin.write('{}\n'.format(score_line).encode())
+        return self.meteor_p.stdout.readline().decode().strip()
 
     def _score(self, hypothesis_str, reference_list):
         self.lock.acquire()

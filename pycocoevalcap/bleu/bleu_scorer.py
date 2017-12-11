@@ -19,6 +19,8 @@ cook_test(test, refs, n=4): Transform a test sentence as a string (together with
 import copy
 import sys, math, re
 from collections import defaultdict
+from six.moves import xrange
+from six import iteritems
 
 def precook(s, n=4, out=False):
     """Takes a string as input and returns an object that can be given to
@@ -26,7 +28,7 @@ def precook(s, n=4, out=False):
     can take string arguments as well."""
     words = s.split()
     counts = defaultdict(int)
-    for k in xrange(1,n+1):
+    for k in range(1,n+1):
         for i in xrange(len(words)-k+1):
             ngram = tuple(words[i:i+k])
             counts[ngram] += 1
@@ -42,7 +44,7 @@ def cook_refs(refs, eff=None, n=4): ## lhuang: oracle will call with "average"
     for ref in refs:
         rl, counts = precook(ref, n)
         reflen.append(rl)
-        for (ngram,count) in counts.iteritems():
+        for (ngram,count) in iteritems(counts):
             maxcounts[ngram] = max(maxcounts.get(ngram,0), count)
 
     # Calculate effective reference sentence length.
@@ -77,7 +79,7 @@ def cook_test(test, ref, eff=None, n=4):
     result["guess"] = [max(0,testlen-k+1) for k in xrange(1,n+1)]
 
     result['correct'] = [0]*n
-    for (ngram, count) in counts.iteritems():
+    for (ngram, count) in iteritems(counts):
         result["correct"][len(ngram)-1] += min(refmaxcounts.get(ngram,0), count)
 
     return result

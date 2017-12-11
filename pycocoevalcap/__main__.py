@@ -38,7 +38,7 @@ def main(args=None):
     """The main routine."""
     # if args is None:
     #    args = sys.argv[1:]
-    parser = argparse.ArgumentParser(args)
+    parser = argparse.ArgumentParser()
     parser.add_argument(
         "annotation-file",
         type=str,
@@ -61,13 +61,17 @@ def main(args=None):
         default='eval-images.json',
         type=str,
         help="Evaluation images results file")
-    args = parser.parse_args()
+    args = vars(parser.parse_args(args))
     evaluate_captions(
-        annotation_file=args.annotation_file,
-        results_file=args.results_file,
-        eval_file=args.results_file,
-        eval_images_file=args.results_file)
+        annotation_file=args['annotation-file'],
+        results_file=args['results-file'],
+        eval_file=args['eval_file'],
+        eval_images_file=args['eval_images_file'])
 
 
 if __name__ == '__main__':
-    main()
+    #main()
+    main([
+          r'D:\Projects\data\mscoco\2017\annotations\captions_val2017.json',
+        '../../visual-attention/experiments/output/model/img_ctx-nosen/v1/results-val.json'
+    ])
