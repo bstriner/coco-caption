@@ -6,7 +6,7 @@ setup(name='coco-caption',
       url="https://github.com/tylin/coco-caption",
       description="Microsoft COCO Caption Evaluation",
       entry_points={
-          'console_scripts': ['evaluate-captions=pycocoevalcap.__main__:main']
+          'console_scripts': ['evaluate-coco-captions=pycocoevalcap.__main__:main']
       },
       requires=['numpy', 'matplotlib'],
       packages=find_packages())

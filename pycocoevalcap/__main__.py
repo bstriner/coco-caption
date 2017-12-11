@@ -49,13 +49,8 @@ def main(args=None):
         help="Results file")
     parser.add_argument(
         "--image-subset",
-        type=bool,
         help="Only consider images that are in the results file",
         action="store_true")
-    parser.add_argument(
-        "results-file",
-        type=str,
-        help="Results file")
     parser.add_argument(
         "--eval-file",
         default='eval.json',
@@ -72,3 +67,7 @@ def main(args=None):
         results_file=args.results_file,
         eval_file=args.results_file,
         eval_images_file=args.results_file)
+
+
+if __name__ == '__main__':
+    main()
